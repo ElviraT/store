@@ -12,6 +12,8 @@
             <div class="mb-3">
                 <label class="form-label required">{{ __('Name') }}</label>
                 <input type="text" class="form-control" name="name" id="name" required>
+                <input type="hidden" class="form-control" name="id_business_cards" id="id_business_cards" value="{{$id}}">
+                <input type="hidden" class="form-control" name="id_user" id="id_user" value="{{auth()->user()->id}}">
             </div>
         </div>
         <p id="status_category"></p>

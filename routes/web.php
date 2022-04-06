@@ -135,6 +135,7 @@ Route::group(['as' => 'user.', 'prefix' => 'user', 'namespace' => 'User', 'middl
     // Create Store
     Route::get('create-store', 'StoreController@CreateStore')->name('create.store');
     Route::post('save-store', 'StoreController@saveStore')->name('save.store');
+    Route::get('category/{id}', 'StoreController@category')->name('category');
     Route::get('products/{id}', 'StoreController@products')->name('products');
     Route::post('save-products/{id}', 'StoreController@saveProducts')->name('save.products');
     }

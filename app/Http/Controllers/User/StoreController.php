@@ -9,12 +9,14 @@ use App\Setting;
 use App\Currency;
 use App\BusinessCard;
 use App\StoreProduct;
+use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Medias;
+use Illuminate\Support\Collection as Collection;
 
 class StoreController extends Controller
 {
@@ -106,7 +108,7 @@ class StoreController extends Controller
                     $card->save();
 
                     alert()->success(trans('New WhatsApp Store Created Successfully!'));
-                    return redirect()->route('user.products', $card_id);
+                    return redirect()->route('user.category', $card_id);
                 } catch (\Exception $th) {
                     alert()->error(trans('Sorry, personalized link was already registered.'));
                     return redirect()->route('user.create.store');
@@ -120,16 +122,21 @@ class StoreController extends Controller
             return redirect()->route('user.create.store');
         }
     }
-
+    public function category($id)
+    {
+        $settings = Setting::where('status', 1)->first();
+        return view('user.store.category', compact('id','settings'));
+    }
     // Products
-    public function products()
+    public function products($id)
     {
         $plan = DB::table('users')->where('user_id', Auth::user()->user_id)->where('status', 1)->first();
         $plan_details = json_decode($plan->plan_details);
         $media = Medias::where('user_id', Auth::user()->user_id)->orderBy('id','desc')->get();
         $settings = Setting::where('status', 1)->first();
+        $categories = Collection::make(Category::select(['id','name'])->where('id_user', auth()->user()->id)->where('id_business_cards', $id)->orderBy('name')->get())->pluck("name", "id");
 
-        return view('user.store.products', compact('plan_details', 'media', 'settings'));
+        return view('user.store.products', compact('plan_details', 'media', 'settings','categories'));
     }
 
     // Save Products
@@ -153,6 +160,7 @@ class StoreController extends Controller
                             $service->product_id = uniqid();
                             $service->badge = $request->badge[$i];
                             $service->product_image = $request->product_image[$i];
+                            $service->id_category = $request->category[$i];
                             $service->product_name = $request->product_name[$i];
                             $service->product_subtitle = $request->product_subtitle[$i];
                             $service->regular_price = $request->regular_price[$i];
@@ -312,6 +320,7 @@ class StoreController extends Controller
         $plan = DB::table('users')->where('user_id', Auth::user()->user_id)->where('status', 1)->first();
         $plan_details = json_decode($plan->plan_details);
         $business_card = BusinessCard::where('card_id', $id)->first();
+        //dd($business_card);
 
         if ($business_card == null) {
             return view('errors.404');
@@ -319,8 +328,9 @@ class StoreController extends Controller
             $products = StoreProduct::where('card_id', $id)->get();
             $media = Medias::where('user_id', Auth::user()->user_id)->orderBy('id','desc')->get();
             $settings = Setting::where('status', 1)->first();
+            $categories = Collection::make(Category::select(['id','name'])->where('id_user', auth()->user()->id)->where('id_business_cards', $business_card->id)->orderBy('name')->get())->pluck("name", "id");
 
-            return view('user.edit-store.edit-products', compact('plan_details', 'products', 'media', 'settings'));
+            return view('user.edit-store.edit-products', compact('plan_details', 'products', 'media', 'settings','categories'));
         }
     }
 
@@ -345,6 +355,7 @@ class StoreController extends Controller
                         $product->product_id = uniqid();
                         $product->badge = $request->badge[$i];
                         $product->product_image = $request->product_image[$i];
+                        $product->id_category = $request->category[$i];
                         $product->product_name = $request->product_name[$i];
                         $product->product_subtitle = $request->product_subtitle[$i];
                         $product->regular_price = $request->regular_price[$i];

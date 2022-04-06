@@ -198,7 +198,7 @@
                                                     placeholder="{{ __('WhatsApp Footer Text') }}...">{{ $store_details->whatsapp_msg }}</textarea>
                                             </div>
                                         </div>
-
+                                        
                                         @if ($plan_details->personalized_link)
                                         <div class="col-md-10 col-xl-10">
                                             <div class="mb-3">
@@ -236,7 +236,6 @@
     </div>
     @include('user.includes.footer')
 </div>
-
 @push('custom-js')
 <script>
     function checkLink(){
@@ -258,6 +257,27 @@
 }else{
     $('#status').html("");
 }
+}
+
+function add_category(){
+    "use strict";
+    var name = $('#name').val();
+    var id_business_cards = $('#id_business_cards').val();
+    var id_user = $('#id_user').val();
+
+    $.ajax({
+    url: "{{ route('user.add.category') }}",
+    method: 'POST',
+    data:{_token: "{{ csrf_token() }}", name: name, id_business_cards: id_business_cards, id_user: id_user},
+    }).done(function(res) {
+        if(res.status == 'success') {
+            $('#name').val('');
+            $('#status_category').html("<span class='badge mt-2 bg-green'>{{ 'Registro Agregado' }}</span>");
+        }else{
+            $('#status_category').html("<span class='badge mt-2 bg-red'>{{ 'Error al Agregar' }}</span>");
+        }
+            window.setTimeout(function() { $("#status_category").html(''); }, 3000);
+    });
 }
 </script>
 @endpush
