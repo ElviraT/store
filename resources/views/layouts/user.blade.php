@@ -20,6 +20,8 @@
     <link href="{{ asset('backend/css/demo.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/css/styles.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/css/fontawesome-iconpicker.min.css') }}" rel="stylesheet" />
+    
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet" />
 
 
     <link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap4.min.css') }}">

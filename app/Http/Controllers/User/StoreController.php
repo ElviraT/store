@@ -125,7 +125,8 @@ class StoreController extends Controller
     public function category($id)
     {
         $settings = Setting::where('status', 1)->first();
-        return view('user.store.category', compact('id','settings'));
+        $categories = Category::where('id_business_cards', $id)->get();
+        return view('user.store.category', compact('id','settings','categories'));
     }
     // Products
     public function products($id)

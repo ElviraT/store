@@ -820,14 +820,17 @@ class CardController extends Controller
         $link = $request->except('_token');
         $category = Category::create($link);
         $resp = [];
+        $list = [];
         $resp['status'] = 'failed';
-//dd($category);
+
         if ($category) {
             $resp['status'] = 'success';
         } else {
             $resp['status'] = 'failed';
         }
+        
+        $list = Category::where('id_user', $link['id_user'])->where('id_business_cards', $link['id_business_cards'])->get();
 
-        return response()->json($resp);
+        return response()->json([$resp, $list]);
     }
 }
